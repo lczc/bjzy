@@ -204,6 +204,176 @@
                     <el-table-column label="姓名" width="90">
                         <template scope="scope">
 
+    <!--同学信息列表管理界面-->
+    <style>
+        .avatar-uploader .el-upload {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .avatar-uploader .el-upload:hover {
+            border-color: #20a0ff;
+        }
+        .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 178px;
+            height: 178px;
+            line-height: 178px;
+            text-align: center;
+        }
+        .avatar {
+            width: 178px;
+            height: 178px;
+            display: block;
+        }
+    </style>
+    <template id="classmate_list">
+        <div class="cl">
+            <el-tabs v-model="activeName2" type="border-card" @tab-click="handleClick">
+                <el-tab-pane label="同学信息" name="first">
+                    <el-table
+                            :data="tableData3"
+                            height="700"
+                            border
+                            style="width: 100%">
+                        <el-table-column
+                                prop="date"
+                                label="id"
+                                width="100">
+                        </el-table-column>
+                        <el-table-column
+                                prop="date"
+                                label="学号"
+                                width="100">
+                        </el-table-column>
+                        <el-table-column
+                                prop="name"
+                                label="姓名">
+                        </el-table-column>
+                        <el-table-column
+                                prop="school"
+                                label="学校">
+                        </el-table-column>
+                        <el-table-column
+                                prop="email"
+                                label="联系方式">
+                        </el-table-column>
+                        <el-table-column label="操作">
+                            <template scope="scope">
+                                <el-button
+                                        size="small"
+                                        @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                                <el-button
+                                        size="small"
+                                        type="danger"
+                                        @click="open2">删除</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-tab-pane>
+                <el-tab-pane label="添加同学" name="second">
+                    <div class="touxiang">
+                        <h4>请上传头像：</h4>
+                        <el-upload
+                                class="avatar-uploader"
+                                action="../static/admin/images"
+                                :show-file-list="false"
+                                :on-success="handleAvatarSuccess"
+                                :before-upload="beforeAvatarUpload">
+                            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                        </el-upload>
+                    </div>
+                    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+                        <el-form-item label="姓名" prop="name">
+                            <el-col class="line" :span="7"><el-input v-model="ruleForm.name"></el-input></el-col>
+                            <el-col class="line" :span="17"></el-col>
+                        </el-form-item>
+                        <el-form-item label="性别" prop="sex">
+                            <el-select v-model="ruleForm.sex" placeholder="请选择性别">
+                                <el-option label="男" value="men"></el-option>
+                                <el-option label="女" value="women"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="注册时间" required>
+                            <el-col :span="11">
+                                <el-form-item prop="date1">
+                                    <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.date1" style="width: 100%;"></el-date-picker>
+                                </el-form-item>
+                            </el-col>
+                            <el-col class="line" :span="2">-</el-col>
+                            <el-col :span="11">
+                                <el-form-item prop="date2">
+                                    <el-time-picker type="fixed-time" placeholder="选择时间" v-model="ruleForm.date2" style="width: 100%;"></el-time-picker>
+                                </el-form-item>
+                            </el-col>
+                        </el-form-item>
+                        <el-form-item label="是否为管理员" prop="isGod">
+                            <el-switch on-text="" off-text="" v-model="ruleForm.delivery"></el-switch>
+                        </el-form-item>
+                        <el-form-item label="兴趣爱好" prop="type">
+                            <el-checkbox-group v-model="ruleForm.type">
+                                <el-checkbox label="美食" name="type"></el-checkbox>
+                                <el-checkbox label="运动" name="type"></el-checkbox>
+                                <el-checkbox label="追剧" name="type"></el-checkbox>
+                                <el-checkbox label="剁手" name="type"></el-checkbox>
+                            </el-checkbox-group>
+                        </el-form-item>
+                        <el-form-item label="自我介绍" prop="desc">
+                            <el-input type="textarea" v-model="ruleForm.desc"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" @click="submitForm('ruleForm')">立即添加</el-button>
+                            <el-button @click="resetForm('ruleForm')">重置</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-tab-pane>
+            </el-tabs>
+        </div>
+    </template>
+    <!--同学信息列表管理界面end-->
+
+    <!--作品管理页面-->
+    <template id="opus">
+        <div>
+            <el-tabs v-model="activeName2" type="border-card" @tab-click="handleClick">
+                <el-tab-pane label="作品列表" name="first">
+                    <el-table
+                            :data="tableData"
+                            border
+                            style="width: 100%">
+                        <el-table-column
+                                label="作品ID"
+                                width="100"
+                        >
+                            <template scope="scope">
+                                <span style="margin-left: 10px">{{ scope.row.opusID }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                label="上传日期"
+                                >
+                            <template scope="scope">
+                                <el-icon name="time"></el-icon>
+                                <span style="margin-left: 10px">{{ scope.row.date }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                label="作品名称"
+                        >
+                            <template scope="scope">
+                                <span style="margin-left: 10px">{{ scope.row.opusName }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                label="姓名"
+                                >
+                            <template scope="scope">
+                               
+
                             <div slot="reference" class="name-wrapper">
                                 <el-tag>{{ scope.row.name }}</el-tag>
                             </div>
@@ -481,14 +651,14 @@
             data(){
                 return{
                     activeName2: 'first',
-                    // tableData: [{
-                    //     id:1,
-                    //     cn_time: '2016-05-02',
-                    //     pro_name:'《QQ音乐小程序》',
-                    //     name: '王小虎',
-                    //     pro_status:'0',
-                    // }],
-                    proList:[]
+                    tableData: [{
+                        id:1,
+                        cn_time: '2016-05-02',
+                        pro_name:'《QQ音乐小程序》',
+                        name: '王小虎',
+                        pro_status:'0',
+                    }],
+
                 }
             }
         },
